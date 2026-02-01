@@ -138,7 +138,26 @@ export function App() {
       <div style={{ position: 'sticky', top: 0, zIndex: 30, background: 'rgba(247,248,251,0.85)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(10,20,40,0.08)' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 34, height: 34, borderRadius: 10, background: 'linear-gradient(135deg, #1f6feb, #2ea043)', boxShadow: '0 10px 30px rgba(31,111,235,0.18)' }} />
+            <div
+              style={{
+                width: 34,
+                height: 34,
+                borderRadius: 10,
+                overflow: 'hidden',
+                background: 'linear-gradient(135deg, #1f6feb, #2ea043)',
+                boxShadow: '0 10px 30px rgba(31,111,235,0.18)'
+              }}
+              title="Mascot"
+            >
+              <video
+                src="/mascot.mp4"
+                muted
+                playsInline
+                autoPlay
+                loop
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              />
+            </div>
             <div>
               <div style={{ fontWeight: 750, letterSpacing: -0.2 }}>FarmBot Platform</div>
               <div style={{ fontSize: 12, color: '#4b5563' }}>Private acquisition pending • Base testnet MVP</div>
