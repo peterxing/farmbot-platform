@@ -25,6 +25,8 @@ const camerasPath = path.join(dataDir, 'cameras.json');
 const contractorsPath = path.join(dataDir, 'contractors.json');
 const cropsPath = path.join(dataDir, 'crops.json');
 const dronesPath = path.join(dataDir, 'drones.json');
+const robotsPath = path.join(dataDir, 'robots.json');
+const vehiclesPath = path.join(dataDir, 'vehicles.json');
 
 const nonces = new Map<string, string>();
 const sessions = new Map<string, { wallet: Address; createdAt: number }>();
@@ -255,6 +257,8 @@ app.get('/world/snapshot', async (req) => {
   const contractors = safeLoadJson<any>(contractorsPath, { contractors: [] });
   const crops = safeLoadJson<any>(cropsPath, { beds: [], plantings: [], harvests: [] });
   const drones = safeLoadJson<any>(dronesPath, { drones: [], constraints: {} });
+  const robots = safeLoadJson<any>(robotsPath, { robots: [] });
+  const vehicles = safeLoadJson<any>(vehiclesPath, { vehicles: [] });
 
   const snapshot = {
     ts: new Date().toISOString(),
@@ -266,6 +270,8 @@ app.get('/world/snapshot', async (req) => {
     contractors,
     crops,
     drones,
+    robots,
+    vehicles,
 
     sensors: {
       water: {
@@ -330,6 +336,8 @@ type JobKind =
   | 'seeding'
   | 'harvest'
   | 'drone_deployment'
+  | 'humanoid_deployment'
+  | 'vehicle_sentry'
   | 'generic';
 
 type Job = {
@@ -364,6 +372,10 @@ function renderRunbook(job: Job, world: any): string {
     harvest: 'Focus: harvest window, labour plan, handling/cold chain, yield logging.',
     drone_deployment:
       'Focus: mission plan + preflight checklist + safety/compliance; no autonomous flight execution in MVP.',
+    humanoid_deployment:
+      'Focus: task decomposition + tool list + safety constraints + teleop plan; assume on-site supervision and E-stop.',
+    vehicle_sentry:
+      'Focus: sentry/telemetry monitoring, event triage, escalation runbook; no remote driving.',
     generic: 'General operational runbook.'
   };
 
@@ -395,6 +407,8 @@ app.post('/jobs', async (req) => {
           'seeding',
           'harvest',
           'drone_deployment',
+          'humanoid_deployment',
+          'vehicle_sentry',
           'generic'
         ])
         .default('generic'),

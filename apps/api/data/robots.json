@@ -1,0 +1,22 @@
+{
+  "robots": [
+    {
+      "id": "humanoid_1",
+      "name": "Optimus (placeholder)",
+      "platform": "tesla-optimus",
+      "capabilities": ["carry", "manipulation", "inspection"],
+      "interfaces": {
+        "teleop": "",
+        "api": "",
+        "video": ""
+      },
+      "safety": {
+        "requiresOnSiteSupervisor": true,
+        "requiresEstop": true,
+        "maxSpeedMps": 0,
+        "geofence": []
+      },
+      "notes": "Placeholder until actual Optimus interface is available"
+    }
+  ]
+}

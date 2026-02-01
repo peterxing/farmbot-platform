@@ -1,0 +1,19 @@
+{
+  "vehicles": [
+    {
+      "id": "vehicle_1",
+      "name": "Tesla (placeholder)",
+      "platform": "tesla",
+      "capabilities": ["sentry", "telemetry", "location"],
+      "interfaces": {
+        "fleetApi": "",
+        "camera": ""
+      },
+      "safety": {
+        "noRemoteDriving": true,
+        "requiresOwnerAuth": true
+      },
+      "notes": "Use read-only telemetry + sentry events first; no remote driving"
+    }
+  ]
+}

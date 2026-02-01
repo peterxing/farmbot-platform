@@ -30,6 +30,16 @@ These are the first real-world capabilities, in increasing risk order:
 - MVP: mission plan generator + preflight checklist.
 - Later: on-site supervised execution only; integrate logs/telemetry.
 
+## 7) Vehicle sentry / telemetry (observe → incident runbooks)
+**Inputs needed:** Fleet API access, vehicle list, what counts as an incident.
+- MVP: sentry event triage + runbooks; alerts.
+- Hard rule: **no remote driving** via platform.
+
+## 8) Humanoid deployment (supervised execution only)
+**Inputs needed:** actual robot interface, on-site safety policy, geofence, E-stop.
+- MVP: task plan generator + checklists.
+- Later: supervised teleop; never raw motor control over the internet.
+
 ---
 
 ## Data templates
@@ -40,3 +50,8 @@ Fill these in when available:
 - `apps/api/data/contractors.json`
 - `apps/api/data/crops.json`
 - `apps/api/data/drones.json`
+- `apps/api/data/vehicles.json`
+- `apps/api/data/robots.json`
+
+See also:
+- `docs/TESLA_AND_HUMANOID.md`
