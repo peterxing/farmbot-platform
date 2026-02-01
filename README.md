@@ -2,7 +2,6 @@
 
 Agent-first platform for **token-gated fractionalised farm automation**.
 
-- Demo (Cloudflare Pages): https://farmbot-platform-mvp.pages.dev
 - Status: MVP (testnet / demo mode; no physical actuation)
 
 ## What it does (today)
@@ -46,5 +45,5 @@ clawdbot skills info farmbot-onboarding
 ## Legal/compliance note (AU)
 Keep MVP **testnet-only**. Treat the token as **consumptive platform entitlement** (ops credits), avoid marketing any investment return, and keep any land access as a separate revocable licence/ToS.
 
-## Media rights
-This repo may contain property/brochure imagery used for UI prototyping. If you plan a public launch, replace with licensed assets.
+## Media
+This repo intentionally avoids property-identifying imagery. Use placeholders until acquisition is complete.

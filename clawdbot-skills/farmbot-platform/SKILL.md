@@ -1,7 +1,7 @@
 ---
 name: farmbot-platform
 description: "Build/operate the FarmBot Platform: token-gated entitlement accounting, plot allocation, farm work requests, and safe edge execution via an on-farm gateway (CCTV/sensors/irrigation/robots)."
-metadata: {"clawdbot":{"emoji":"📦","always":true,"homepage":"https://farmbot-platform-mvp.pages.dev"}}
+metadata: {"clawdbot":{"emoji":"📦","always":true,"homepage":"https://github.com/peterxing/farmbot-platform"}}
 ---
 
 # FarmBot Platform skill

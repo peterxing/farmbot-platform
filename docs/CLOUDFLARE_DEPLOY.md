@@ -24,5 +24,4 @@ npx wrangler pages project create farmbot-platform-mvp --production-branch main
 npm run deploy:pages
 ```
 
-Primary URL:
-- https://farmbot-platform-mvp.pages.dev
+(Private until acquisition is complete.)

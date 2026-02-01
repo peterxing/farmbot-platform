@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#123a2a"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="700" fill="url(#g)"/>
+  <rect width="1200" height="700" fill="url(#grid)"/>
+  <text x="40" y="80" fill="rgba(255,255,255,0.85)" font-family="system-ui, -apple-system, Segoe UI, Roboto" font-size="34" font-weight="700">
+    Farm Map (Placeholder)
+  </text>
+  <text x="40" y="120" fill="rgba(255,255,255,0.65)" font-family="system-ui, -apple-system, Segoe UI, Roboto" font-size="16">
+    Replace with real georeferenced boundary + parcels after acquisition.
+  </text>
+</svg>

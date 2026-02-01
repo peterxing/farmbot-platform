@@ -1,7 +1,7 @@
 ---
 name: farmbot-onboarding
 description: "Onboard into the FarmBot Platform (agent-first): clone repo, install deps, run local dev, mint agent API keys, and deploy the static demo to Cloudflare Pages."
-metadata: {"clawdbot":{"emoji":"🧩","always":true,"homepage":"https://farmbot-platform-mvp.pages.dev"}}
+metadata: {"clawdbot":{"emoji":"🧩","always":true,"homepage":"https://github.com/peterxing/farmbot-platform"}}
 ---
 
 # FarmBot Platform — onboarding skill

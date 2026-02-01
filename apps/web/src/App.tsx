@@ -141,7 +141,7 @@ export function App() {
             <div style={{ width: 34, height: 34, borderRadius: 10, background: 'linear-gradient(135deg, #1f6feb, #2ea043)', boxShadow: '0 10px 30px rgba(31,111,235,0.18)' }} />
             <div>
               <div style={{ fontWeight: 750, letterSpacing: -0.2 }}>FarmBot Platform</div>
-              <div style={{ fontSize: 12, color: '#4b5563' }}>Sohip Farm (661 Stewarts River Rd) • Base testnet MVP</div>
+              <div style={{ fontSize: 12, color: '#4b5563' }}>Private acquisition pending • Base testnet MVP</div>
             </div>
           </div>
 
@@ -174,10 +174,9 @@ export function App() {
           <div
             style={{
               height: 240,
-              backgroundImage: 'url(/media/tree.jpg)',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              filter: 'saturate(1.1) contrast(1.05)'
+              background:
+                'radial-gradient(900px 300px at 15% 35%, rgba(46, 160, 67, 0.55), transparent 60%), radial-gradient(700px 260px at 75% 30%, rgba(31, 111, 235, 0.45), transparent 60%), linear-gradient(135deg, #0b1220, #0f2a1f)',
+              filter: 'saturate(1.05)'
             }}
           />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(11,18,32,0.15), rgba(11,18,32,0.82))' }} />
@@ -256,11 +255,11 @@ export function App() {
 
         {/* Gallery */}
         <div style={{ marginTop: 18, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-          <div style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(10,20,40,0.10)', background: '#fff' }}>
-            <img src="/media/living.jpg" alt="Property" style={{ width: '100%', height: 260, objectFit: 'cover', display: 'block' }} />
+          <div style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(10,20,40,0.10)', background: '#0b1220' }}>
+            <div style={{ height: 260, background: 'linear-gradient(135deg, rgba(31,111,235,0.45), rgba(46,160,67,0.35))' }} />
           </div>
-          <div style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(10,20,40,0.10)', background: '#fff' }}>
-            <img src="/media/brochure_interior.jpg" alt="Brochure" style={{ width: '100%', height: 260, objectFit: 'cover', display: 'block' }} />
+          <div style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(10,20,40,0.10)', background: '#0b1220' }}>
+            <div style={{ height: 260, background: 'linear-gradient(135deg, rgba(46,160,67,0.45), rgba(31,111,235,0.35))' }} />
           </div>
         </div>
 
@@ -281,7 +280,7 @@ export function App() {
             </div>
 
             <div style={{ marginTop: 10, position: 'relative', width: '100%', maxWidth: 980 }}>
-              <img src="/sohip_map.jpg" alt="Sohip Farm map" style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 12 }} />
+              <img src="/map_placeholder.svg" alt="Farm map placeholder" style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 12 }} />
 
               <svg viewBox="0 0 1 1" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
                 <defs>
