@@ -1,0 +1,12 @@
+{
+  "cameras": [
+    {
+      "id": "cam_001",
+      "name": "Front gate",
+      "location": "gate",
+      "rtspUrl": "",
+      "onvif": "",
+      "notes": "Read-only CCTV first; fill in when credentials available"
+    }
+  ]
+}

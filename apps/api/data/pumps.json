@@ -1,0 +1,16 @@
+{
+  "pumps": [
+    {
+      "id": "pump_main",
+      "name": "Main pump",
+      "location": "pump_shed",
+      "maxKw": 0,
+      "telemetry": {
+        "ctSensorId": "ct_pump_main",
+        "flowSensorId": "flow_main",
+        "pressureSensorId": "pressure_main"
+      },
+      "notes": "Fill in after acquisition"
+    }
+  ]
+}

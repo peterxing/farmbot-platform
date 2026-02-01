@@ -1,0 +1,13 @@
+{
+  "contractors": [
+    {
+      "id": "contractor_plumber_1",
+      "name": "",
+      "trade": "plumber",
+      "phone": "",
+      "email": "",
+      "preferredContact": "sms",
+      "notes": "Add trusted local contractors"
+    }
+  ]
+}

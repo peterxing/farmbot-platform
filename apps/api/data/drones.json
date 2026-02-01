@@ -1,0 +1,16 @@
+{
+  "drones": [
+    {
+      "id": "drone_1",
+      "name": "",
+      "platform": "",
+      "capabilities": ["photo"],
+      "homeBase": "",
+      "notes": "Define drone type + mission constraints"
+    }
+  ],
+  "constraints": {
+    "noFly": [],
+    "requiresLicensedPilot": true
+  }
+}

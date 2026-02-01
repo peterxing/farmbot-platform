@@ -1,0 +1,21 @@
+{
+  "zones": [
+    {
+      "id": "zone_1",
+      "name": "Zone 1",
+      "plotIds": ["plot_001"],
+      "valveId": "valve_zone_1",
+      "areaSqm": 1000,
+      "flowLpm": 0,
+      "notes": "Fill in after acquisition"
+    }
+  ],
+  "waterSources": [
+    {
+      "id": "tank_1",
+      "name": "Tank 1",
+      "kind": "tank",
+      "notes": "Fill in after acquisition"
+    }
+  ]
+}

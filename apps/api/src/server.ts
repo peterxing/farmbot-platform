@@ -18,6 +18,14 @@ const plotsPath = path.join(dataDir, 'plots.json');
 const boundaryPath = path.join(dataDir, 'property_boundary_image.json');
 const agentKeysPath = path.join(dataDir, 'agent-keys.json');
 
+// Physical-world config (template JSON; safe to keep generic)
+const irrigationPath = path.join(dataDir, 'irrigation.json');
+const pumpsPath = path.join(dataDir, 'pumps.json');
+const camerasPath = path.join(dataDir, 'cameras.json');
+const contractorsPath = path.join(dataDir, 'contractors.json');
+const cropsPath = path.join(dataDir, 'crops.json');
+const dronesPath = path.join(dataDir, 'drones.json');
+
 const nonces = new Map<string, string>();
 const sessions = new Map<string, { wallet: Address; createdAt: number }>();
 
@@ -26,6 +34,14 @@ function loadJson<T>(p: string): T {
   // Handle UTF-8 BOM (PowerShell Out-File writes BOM by default)
   const text = raw.replace(/^\uFEFF/, '');
   return JSON.parse(text) as T;
+}
+
+function safeLoadJson<T>(p: string, fallback: T): T {
+  try {
+    return loadJson<T>(p);
+  } catch {
+    return fallback;
+  }
 }
 
 function saveJson(p: string, obj: unknown) {
@@ -233,9 +249,24 @@ app.get('/world/snapshot', async (req) => {
 
   const scopedPlots = requested.length > 0 ? plots.filter((p) => requested.includes(p.id)) : plots;
 
+  const irrigation = safeLoadJson<any>(irrigationPath, { zones: [], waterSources: [] });
+  const pumps = safeLoadJson<any>(pumpsPath, { pumps: [] });
+  const cameras = safeLoadJson<any>(camerasPath, { cameras: [] });
+  const contractors = safeLoadJson<any>(contractorsPath, { contractors: [] });
+  const crops = safeLoadJson<any>(cropsPath, { beds: [], plantings: [], harvests: [] });
+  const drones = safeLoadJson<any>(dronesPath, { drones: [], constraints: {} });
+
   const snapshot = {
     ts: new Date().toISOString(),
     plots: scopedPlots,
+
+    irrigation,
+    pumps,
+    cameras,
+    contractors,
+    crops,
+    drones,
+
     sensors: {
       water: {
         tankLevelPct: 72,
@@ -258,7 +289,6 @@ app.get('/world/snapshot', async (req) => {
       pumps: [{ id: 'pump_main', state: 'off' }],
       valves: [{ id: 'valve_zone_1', state: 'closed' }]
     },
-    cameras: [{ id: 'cam_001', status: 'unavailable_in_mvp' }],
     anomalies: [
       { id: 'mvp_no_cctv', severity: 'info', message: 'CCTV not connected (MVP)' },
       { id: 'mvp_no_edge', severity: 'info', message: 'Edge gateway not enforcing safety policies yet (MVP)' }
@@ -292,11 +322,22 @@ app.post('/me/allocations', async (req) => {
 // --- Jobs + runbooks (agent-customer primitive) ---
 type JobStatus = 'queued' | 'running' | 'succeeded' | 'failed' | 'canceled';
 
+type JobKind =
+  | 'irrigation_schedule'
+  | 'pump_monitoring'
+  | 'security_patrol'
+  | 'contractor_dispatch'
+  | 'seeding'
+  | 'harvest'
+  | 'drone_deployment'
+  | 'generic';
+
 type Job = {
   id: string;
   createdAt: string;
   wallet: Address;
   requestedBy: 'session' | 'agentKey';
+  kind: JobKind;
   plotIds: string[];
   objective: string;
   constraints?: Record<string, unknown>;
@@ -309,7 +350,34 @@ const jobArtifacts = new Map<string, Artifact[]>();
 
 function renderRunbook(job: Job, world: any): string {
   const plots = job.plotIds.map((p) => `- ${p}`).join('\n');
-  return `# Runbook (MVP)\n\n## Objective\n${job.objective}\n\n## Plots\n${plots}\n\n## Constraints\n\n\`\`\`json\n${JSON.stringify(job.constraints ?? {}, null, 2)}\n\`\`\`\n\n## World snapshot (summary)\n\`\`\`json\n${JSON.stringify(world?.sensors ?? {}, null, 2)}\n\`\`\`\n\n## Steps (plan-only)\n1) Validate inputs (water/energy/weather).\n2) Generate schedule (ops credits aware).\n3) Produce safe action proposals (no actuation in MVP).\n4) Emit contractor pack if needed.\n\n## Safety\n- No physical actuation is performed in MVP.\n- Any future actuation must pass edge policy + (initially) human approval.\n`;
+
+  const kindHints: Record<JobKind, string> = {
+    irrigation_schedule:
+      'Focus: zone runtimes, water availability, pump constraints, and a weekly schedule with safe assumptions.',
+    pump_monitoring:
+      'Focus: expected pump curves/signals, fault detection (dry run, cavitation), and alert thresholds.',
+    security_patrol:
+      'Focus: camera sweep cadence, motion review checklist, and escalation steps.',
+    contractor_dispatch:
+      'Focus: convert problem description into a dispatch pack (scope, parts, photos, access notes).',
+    seeding: 'Focus: bed prep, seed rate, timing, labour estimate, and post-seed irrigation.',
+    harvest: 'Focus: harvest window, labour plan, handling/cold chain, yield logging.',
+    drone_deployment:
+      'Focus: mission plan + preflight checklist + safety/compliance; no autonomous flight execution in MVP.',
+    generic: 'General operational runbook.'
+  };
+
+  return `# Runbook (MVP)\n\n## Kind\n${job.kind}\n\n## Objective\n${job.objective}\n\n## Hints\n${kindHints[job.kind]}\n\n## Plots\n${plots}\n\n## Constraints\n\n\`\`\`json\n${JSON.stringify(job.constraints ?? {}, null, 2)}\n\`\`\`\n\n## World snapshot (summary)\n\`\`\`json\n${JSON.stringify(
+    {
+      sensors: world?.sensors ?? {},
+      irrigation: world?.irrigation ?? {},
+      pumps: world?.pumps ?? {},
+      cameras: world?.cameras ?? {},
+      drones: world?.drones ?? {}
+    },
+    null,
+    2
+  )}\n\`\`\`\n\n## Steps (plan-only)\n1) Validate inputs (water/energy/weather).\n2) Generate schedule / checks (ops credits aware).\n3) Produce safe action proposals (no actuation in MVP).\n4) If action needed: generate an approval request / contractor dispatch pack.\n\n## Safety\n- No physical actuation is performed in MVP.\n- Any future actuation must pass edge policy + (initially) human approval.\n`;
 }
 
 app.post('/jobs', async (req) => {
@@ -318,6 +386,18 @@ app.post('/jobs', async (req) => {
 
   const body = z
     .object({
+      kind: z
+        .enum([
+          'irrigation_schedule',
+          'pump_monitoring',
+          'security_patrol',
+          'contractor_dispatch',
+          'seeding',
+          'harvest',
+          'drone_deployment',
+          'generic'
+        ])
+        .default('generic'),
       plotIds: z.array(z.string()).min(1),
       objective: z.string().min(3),
       constraints: z.record(z.any()).optional()
@@ -330,6 +410,7 @@ app.post('/jobs', async (req) => {
     createdAt: new Date().toISOString(),
     wallet: auth.wallet,
     requestedBy: auth.authType,
+    kind: body.kind,
     plotIds: body.plotIds,
     objective: body.objective,
     constraints: body.constraints,

@@ -1,0 +1,12 @@
+{
+  "beds": [
+    {
+      "id": "bed_001",
+      "name": "Bed 1",
+      "plotIds": ["plot_001"],
+      "areaSqm": 0
+    }
+  ],
+  "plantings": [],
+  "harvests": []
+}
