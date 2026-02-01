@@ -1,0 +1,20 @@
+{
+  "name": "@farmbot/platform",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev -w @farmbot/web",
+    "dev:api": "npm run dev -w @farmbot/api",
+    "dev:edge": "npm run dev -w @farmbot/edge-gateway",
+    "build": "npm run build -ws",
+    "lint": "npm run lint -ws",
+    "deploy:pages": "npm run build -w @farmbot/web && npx wrangler pages deploy apps/web/dist --project-name farmbot-platform-mvp --branch main --commit-dirty=true"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
