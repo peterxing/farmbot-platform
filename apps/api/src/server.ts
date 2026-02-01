@@ -137,6 +137,14 @@ function requireWallet(req: any): { wallet: Address; authType: 'session' | 'agen
   return { wallet: s.wallet, authType: 'session' };
 }
 
+function requireScope(auth: { authType: 'session' | 'agentKey'; scopes?: string[] }, scope: string) {
+  if (auth.authType !== 'agentKey') return;
+  const scopes = auth.scopes ?? [];
+  if (!scopes.includes(scope)) {
+    throw new Error(`Agent key missing required scope: ${scope}`);
+  }
+}
+
 // --- Auth ---
 app.post('/auth/nonce', async (req) => {
   const body = z.object({ address: z.string() }).parse((req as any).body);
@@ -205,13 +213,72 @@ app.get('/boundary', async () => {
   return { polygonImage: loadJson<Array<[number, number]>>(boundaryPath) };
 });
 
+// --- World snapshot (agent-customer primitive) ---
+// In MVP this is mock data. Later it is backed by the edge gateway.
+app.get('/world/snapshot', async (req) => {
+  const auth = requireWallet(req);
+  requireScope(auth, 'read');
+
+  const query = z
+    .object({
+      plotIds: z.string().optional()
+    })
+    .parse((req as any).query ?? {});
+
+  const plots = loadJson<Plot[]>(plotsPath);
+  const requested = (query.plotIds ?? '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const scopedPlots = requested.length > 0 ? plots.filter((p) => requested.includes(p.id)) : plots;
+
+  const snapshot = {
+    ts: new Date().toISOString(),
+    plots: scopedPlots,
+    sensors: {
+      water: {
+        tankLevelPct: 72,
+        flowLpm: 0,
+        pressureKpa: 0
+      },
+      energy: {
+        batterySocPct: 65,
+        solarKw: 0,
+        loadKw: 0.8
+      },
+      weather: {
+        tempC: 23,
+        humidityPct: 55,
+        windKph: 8,
+        rainMm24h: 0
+      }
+    },
+    actuators: {
+      pumps: [{ id: 'pump_main', state: 'off' }],
+      valves: [{ id: 'valve_zone_1', state: 'closed' }]
+    },
+    cameras: [{ id: 'cam_001', status: 'unavailable_in_mvp' }],
+    anomalies: [
+      { id: 'mvp_no_cctv', severity: 'info', message: 'CCTV not connected (MVP)' },
+      { id: 'mvp_no_edge', severity: 'info', message: 'Edge gateway not enforcing safety policies yet (MVP)' }
+    ]
+  };
+
+  return snapshot;
+});
+
 app.get('/me/allocations', async (req) => {
-  const { wallet } = requireWallet(req);
+  const auth = requireWallet(req);
+  requireScope(auth, 'read');
+  const { wallet } = auth;
   return { wallet, allocations: allocations[wallet] ?? [] };
 });
 
 app.post('/me/allocations', async (req) => {
-  const { wallet } = requireWallet(req);
+  const auth = requireWallet(req);
+  requireScope(auth, 'plan');
+  const { wallet } = auth;
   const body = z
     .object({
       allocations: z.array(z.object({ plotId: z.string(), credits: z.number().nonnegative() }))
@@ -222,7 +289,137 @@ app.post('/me/allocations', async (req) => {
   return { ok: true };
 });
 
-// --- Work requests + artifacts (stub agent) ---
+// --- Jobs + runbooks (agent-customer primitive) ---
+type JobStatus = 'queued' | 'running' | 'succeeded' | 'failed' | 'canceled';
+
+type Job = {
+  id: string;
+  createdAt: string;
+  wallet: Address;
+  requestedBy: 'session' | 'agentKey';
+  plotIds: string[];
+  objective: string;
+  constraints?: Record<string, unknown>;
+  status: JobStatus;
+  error?: string;
+};
+
+const jobs = new Map<string, Job>();
+const jobArtifacts = new Map<string, Artifact[]>();
+
+function renderRunbook(job: Job, world: any): string {
+  const plots = job.plotIds.map((p) => `- ${p}`).join('\n');
+  return `# Runbook (MVP)\n\n## Objective\n${job.objective}\n\n## Plots\n${plots}\n\n## Constraints\n\n\`\`\`json\n${JSON.stringify(job.constraints ?? {}, null, 2)}\n\`\`\`\n\n## World snapshot (summary)\n\`\`\`json\n${JSON.stringify(world?.sensors ?? {}, null, 2)}\n\`\`\`\n\n## Steps (plan-only)\n1) Validate inputs (water/energy/weather).\n2) Generate schedule (ops credits aware).\n3) Produce safe action proposals (no actuation in MVP).\n4) Emit contractor pack if needed.\n\n## Safety\n- No physical actuation is performed in MVP.\n- Any future actuation must pass edge policy + (initially) human approval.\n`;
+}
+
+app.post('/jobs', async (req) => {
+  const auth = requireWallet(req);
+  requireScope(auth, 'plan');
+
+  const body = z
+    .object({
+      plotIds: z.array(z.string()).min(1),
+      objective: z.string().min(3),
+      constraints: z.record(z.any()).optional()
+    })
+    .parse((req as any).body);
+
+  const id = newId('job');
+  const job: Job = {
+    id,
+    createdAt: new Date().toISOString(),
+    wallet: auth.wallet,
+    requestedBy: auth.authType,
+    plotIds: body.plotIds,
+    objective: body.objective,
+    constraints: body.constraints,
+    status: 'queued'
+  };
+
+  jobs.set(id, job);
+  return job;
+});
+
+app.get('/jobs', async (req) => {
+  const auth = requireWallet(req);
+  requireScope(auth, 'read');
+
+  const query = z.object({ status: z.string().optional() }).parse((req as any).query ?? {});
+  const list = Array.from(jobs.values()).filter((j) => j.wallet === auth.wallet);
+  const filtered = query.status ? list.filter((j) => j.status === query.status) : list;
+  return filtered.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+});
+
+app.get('/jobs/:id', async (req) => {
+  const auth = requireWallet(req);
+  requireScope(auth, 'read');
+
+  const id = (req as any).params.id as string;
+  const job = jobs.get(id);
+  if (!job || job.wallet !== auth.wallet) return { error: 'not_found' };
+  return job;
+});
+
+app.get('/jobs/:id/artifacts', async (req) => {
+  const auth = requireWallet(req);
+  requireScope(auth, 'read');
+
+  const id = (req as any).params.id as string;
+  const job = jobs.get(id);
+  if (!job || job.wallet !== auth.wallet) return { error: 'not_found' };
+  return jobArtifacts.get(id) ?? [];
+});
+
+app.post('/jobs/:id/cancel', async (req) => {
+  const auth = requireWallet(req);
+  requireScope(auth, 'plan');
+
+  const id = (req as any).params.id as string;
+  const job = jobs.get(id);
+  if (!job || job.wallet !== auth.wallet) return { ok: false, error: 'not_found' };
+  if (job.status === 'succeeded' || job.status === 'failed') return { ok: false, error: 'already_finished' };
+  job.status = 'canceled';
+  jobs.set(id, job);
+  return { ok: true };
+});
+
+// simple in-process worker loop (MVP)
+setInterval(async () => {
+  const next = Array.from(jobs.values()).find((j) => j.status === 'queued');
+  if (!next) return;
+
+  next.status = 'running';
+  jobs.set(next.id, next);
+
+  try {
+    // world snapshot (reuse endpoint logic lightly)
+    const world = {
+      sensors: {
+        water: { tankLevelPct: 72, flowLpm: 0, pressureKpa: 0 },
+        energy: { batterySocPct: 65, solarKw: 0, loadKw: 0.8 },
+        weather: { tempC: 23, humidityPct: 55, windKph: 8, rainMm24h: 0 }
+      }
+    };
+
+    const art: Artifact = {
+      id: newId('art'),
+      workRequestId: next.id,
+      kind: 'markdown',
+      filename: `${next.id}_runbook.md`,
+      content: renderRunbook(next, world)
+    };
+
+    jobArtifacts.set(next.id, [art]);
+    next.status = 'succeeded';
+    jobs.set(next.id, next);
+  } catch (e: any) {
+    next.status = 'failed';
+    next.error = String(e?.message ?? e);
+    jobs.set(next.id, next);
+  }
+}, 750);
+
+// --- Work requests + artifacts (legacy stub agent) ---
 const workRequests = new Map<string, WorkRequest>();
 const artifacts = new Map<string, Artifact[]>();
 
@@ -232,7 +429,9 @@ function renderPlan(type: WorkRequestType, plotIds: string[], prompt: string): s
 }
 
 app.post('/work-requests', async (req) => {
-  const { wallet } = requireWallet(req);
+  const auth = requireWallet(req);
+  requireScope(auth, 'plan');
+  const { wallet } = auth;
   const body = z
     .object({
       plotIds: z.array(z.string()).min(1),
@@ -266,7 +465,9 @@ app.post('/work-requests', async (req) => {
 });
 
 app.get('/work-requests/:id', async (req) => {
-  const { wallet } = requireWallet(req);
+  const auth = requireWallet(req);
+  requireScope(auth, 'read');
+  const { wallet } = auth;
   const id = (req as any).params.id as string;
   const wr = workRequests.get(id);
   if (!wr || wr.wallet !== wallet) {
@@ -276,7 +477,9 @@ app.get('/work-requests/:id', async (req) => {
 });
 
 app.get('/work-requests/:id/artifacts', async (req) => {
-  const { wallet } = requireWallet(req);
+  const auth = requireWallet(req);
+  requireScope(auth, 'read');
+  const { wallet } = auth;
   const id = (req as any).params.id as string;
   const wr = workRequests.get(id);
   if (!wr || wr.wallet !== wallet) {
