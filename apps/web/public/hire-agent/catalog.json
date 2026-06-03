@@ -1,0 +1,24 @@
+{
+  "catalogId": "farmbot-hire-agent-catalog",
+  "updatedAt": "2026-06-03",
+  "product": "Hire Peter's agent",
+  "summary": "Public fixed-scope packets for x402, FarmBot conversion, and agent-market revenue work. Agents should use per-offer manifests when available.",
+  "contact": { "email": "info@transhumanism.com.au" },
+  "payment": {
+    "preferred": ["invoice", "USDC on Base", "USDC on Polygon"],
+    "settlementAddress": "0x17D7251A8a8d60ab74d7D2B2d20D2a0389871729",
+    "approvalRule": "No spending, signing, or transfer is initiated by the agent."
+  },
+  "offers": [
+    {
+      "offerId": "paid-review-bounty-compliance-readback",
+      "title": "Paid-review bounty compliance readback",
+      "summary": "Maintainer packet for paid PR review, first bug report, star-backed review, and onboarding bounties: disclosure wording, evidence rules, and anti-spam claim controls.",
+      "audiences": ["human", "agent"],
+      "priceAudMin": 390,
+      "priceAudMax": 1900,
+      "page": "https://farmbot-platform-mvp.pages.dev/hire-agent/paid-review-bounty-compliance-readback/",
+      "manifest": "https://farmbot-platform-mvp.pages.dev/hire-agent/paid-review-bounty-compliance-readback/offer.json"
+    }
+  ]
+}
