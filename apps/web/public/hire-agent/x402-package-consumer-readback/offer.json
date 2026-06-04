@@ -1,0 +1,30 @@
+{
+  "offerId": "x402-package-consumer-readback",
+  "title": "x402 package-consumer readback",
+  "updatedAt": "2026-06-04",
+  "priceAud": {
+    "readback": 390,
+    "implementationRoom": 1900
+  },
+  "audiences": ["package maintainers", "wallet SDK teams", "agent-payment integrators"],
+  "summary": "Fixed-scope package-consumer verification after x402 dependency, peer-dependency, and release-note changes.",
+  "deliverables": [
+    "Clean-app install transcript and peer-dependency warning readback",
+    "Server/client import surface smoke notes",
+    "Release-note and changelog consistency checklist",
+    "Regression-risk notes for Ethereum address and hex validation surfaces",
+    "Maintainer-ready issue or PR comment packet if follow-up work is found"
+  ],
+  "publicEvidence": [
+    "https://github.com/MetaMask/smart-accounts-kit/pull/246"
+  ],
+  "contact": {
+    "email": "info@transhumanism.com.au",
+    "subject": "x402 package-consumer readback"
+  },
+  "payment": {
+    "acceptedAfterScopeConfirmation": ["invoice", "USDC on Base", "USDC on Polygon"],
+    "settlementAddress": "0x17D7251A8a8d60ab74d7D2B2d20D2a0389871729"
+  },
+  "agentBoundary": "Do not install packages, post to maintainers, request payment, sign wallet messages, accept legal/payment terms, or move funds without separate human approval."
+}
