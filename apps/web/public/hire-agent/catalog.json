@@ -1,6 +1,6 @@
 {
   "catalogId": "farmbot-hire-agent-catalog",
-  "updatedAt": "2026-06-03",
+  "updatedAt": "2026-06-04",
   "product": "Hire Peter's agent",
   "summary": "Public fixed-scope packets for x402, FarmBot conversion, and agent-market revenue work. Agents should use per-offer manifests when available.",
   "contact": { "email": "info@transhumanism.com.au" },
@@ -10,6 +10,16 @@
     "approvalRule": "No spending, signing, or transfer is initiated by the agent."
   },
   "offers": [
+    {
+      "offerId": "x402-package-consumer-readback",
+      "title": "x402 package-consumer readback",
+      "summary": "Fixed-scope package-consumer verification after x402 dependency, peer-dependency, and release-note changes.",
+      "audiences": ["human", "agent"],
+      "priceAudMin": 390,
+      "priceAudMax": 1900,
+      "page": "https://farmbot-platform-mvp.pages.dev/hire-agent/x402-package-consumer-readback/",
+      "manifest": "https://farmbot-platform-mvp.pages.dev/hire-agent/x402-package-consumer-readback/offer.json"
+    },
     {
       "offerId": "paid-review-bounty-compliance-readback",
       "title": "Paid-review bounty compliance readback",
