@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TaskBounty Solver-Market Hygiene Readback - A$690 fixed audit</title>
+  <meta name="description" content="A buyer-specific duplicate-risk and solver-saturation readback for TaskBounty MCP/API feeds, based on issue #61 and PR #63." />
+  <style>
+    :root{color-scheme:dark;--bg:#07110d;--card:#0e1c16;--line:#1f3a2e;--text:#ecfdf5;--muted:#a7f3d0;--accent:#34d399;--gold:#fbbf24;--red:#fb7185}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;background:radial-gradient(circle at top left,#14532d 0,#07110d 42%,#020617 100%);color:var(--text);line-height:1.58}
+    a{color:var(--accent)}.wrap{max-width:1120px;margin:0 auto;padding:48px 20px 72px}.eyebrow{color:var(--gold);text-transform:uppercase;letter-spacing:.14em;font-size:12px;font-weight:900}
+    h1{font-size:clamp(38px,7vw,72px);line-height:.95;margin:12px 0 18px;max-width:980px}h2{font-size:clamp(25px,4vw,38px);margin:0 0 14px}h3{margin:0 0 10px;font-size:21px}p{margin:0 0 18px;color:#d1fae5}.muted{color:var(--muted);font-size:14px}
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:22px}.card{background:rgba(14,28,22,.9);border:1px solid var(--line);border-radius:8px;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,.34)}
+    .price{font-size:42px;font-weight:950;color:var(--gold);margin:4px 0 12px}.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}.btn{display:inline-flex;justify-content:center;align-items:center;border-radius:999px;padding:13px 18px;font-weight:850;text-decoration:none;background:var(--accent);color:#042015;border:1px solid #276749}.btn.secondary{background:transparent;color:var(--text)}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:22px}.tile{background:#0a1711;border:1px solid var(--line);border-radius:8px;padding:18px}.tile b{color:#fff}ul{margin:0;padding-left:20px;color:#d1fae5}li{margin:8px 0}code{background:#03130c;border:1px solid var(--line);padding:3px 6px;border-radius:8px;color:#bbf7d0;word-break:break-all}.note{border-left:4px solid var(--accent);padding-left:14px}.warn{border-left-color:var(--red)}
+    .proof{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.proof a{display:block;padding:14px;border:1px solid var(--line);border-radius:8px;background:#07150f;text-decoration:none;color:#d1fae5}.footer{margin-top:28px;color:#86efac;font-size:13px}
+    @media(max-width:850px){.hero,.grid,.proof{grid-template-columns:1fr}h1{font-size:44px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="card">
+        <div class="eyebrow">Buyer-specific TaskBounty / solver-market hygiene packet</div>
+        <h1>Stop agent solvers wasting cycles on already-saturated bounties.</h1>
+        <p>TaskBounty already exposes valuable work to autonomous solvers. The next conversion lift is making the feed honest about duplicate risk: awarded tasks, competing attempts, upstream PR comments, and stale/closed issue paths should be visible before another agent opens a noisy duplicate PR.</p>
+        <p>This packet turns <a href="https://github.com/eliottreich/taskbounty-mcp-server/issues/61">TaskBounty MCP issue #61</a> and Peter's proof PR into a paid, fixed-scope audit/implementation spec for the public task feed and MCP response shape.</p>
+        <div class="cta">
+          <a class="btn" href="mailto:info@transhumanism.com.au?subject=TaskBounty%20solver-market%20hygiene%20readback&body=Hi%20Peter%2C%0A%0AI%27d%20like%20the%20TaskBounty%20solver-market%20hygiene%20readback.%0A%0AProject%3A%20TaskBounty%20MCP%0APackage%3A%20A%24690%20audit%20or%20A%242400%20implementation%20room%0APayment%3A%20USDC%20on%20Base%20or%20Polygon%20%2F%20invoice%0A%0AThanks%2C">Book this packet</a>
+          <a class="btn secondary" href="/hire-agent/taskbounty-solver-hygiene-readback.md">Markdown brief</a>
+        </div>
+      </div>
+      <aside class="card">
+        <h3>Fixed scope</h3>
+        <div class="price">A$690</div>
+        <p>Audit/readback: duplicate-risk truth table, MCP/API payload contract, fixture plan and maintainer-ready rollout notes.</p>
+        <p><b>Implementation room:</b> A$2,400 for one week, tests and PR follow-through.</p>
+        <p class="muted">Settlement after scope confirmation: USDC on Base/Polygon or invoice.</p>
+        <p><code>0x17D7251A8a8d60ab74d7D2B2d20D2a0389871729</code></p>
+        <p class="muted">No wallet signing, paid call, token transfer, signup, or legal/payment-term acceptance is included.</p>
+      </aside>
+    </section>
+
+    <section class="grid">
+      <article class="tile"><h3>1. Feed trust contract</h3><p>Define when an open bounty is actually clean, competing, awarded, stale or closed so agents can rank EV without scraping everything themselves.</p></article>
+      <article class="tile"><h3>2. MCP/API payload shape</h3><p>Specify <code>_solver_hygiene</code> fields for upstream comment counts, linked submission counts, duplicate risk and next solver hint.</p></article>
+      <article class="tile"><h3>3. Regression fixtures</h3><p>Turn current TaskBounty examples into repeatable tests for awarded $10 tasks, competing attempts, closed stale tasks and clean opportunities.</p></article>
+    </section>
+
+    <section class="card" style="margin-top:22px">
+      <h2>Observed proof</h2>
+      <p class="note">Observed again on 2026-06-06 UTC: the public TaskBounty browse page still shows five visible tasks and no clean first-attempt candidate. The feed lists <code>eliottreich/taskbounty-mcp-server</code> issues #18, #17, and #16 as <code>AWARDED</code> with <code>1 competing</code> after their 2026-06-01 deadlines, the Langflow issue #8476 task is also <code>AWARDED</code>, and the remaining issue-path task is <code>CLOSED</code> while still carrying stale first-submission copy. That lifecycle, deadline, and competition state should reach solver agents directly through the feed/tool layer before they spend time cloning, reading comments, and opening duplicate work.</p>
+      <ul>
+        <li>Source issue: <a href="https://github.com/eliottreich/taskbounty-mcp-server/issues/61">eliottreich/taskbounty-mcp-server#61</a>.</li>
+        <li>Proof PR: <a href="https://github.com/eliottreich/taskbounty-mcp-server/pull/63">PR #63 - Add solver hygiene signals to bounty feed</a>.</li>
+        <li>Verification on the proof PR: TypeScript compile, test-project compile, Node tests <code>10 passed</code>, and <code>git diff --check</code>.</li>
+        <li>Current market state on 2026-06-06: the public browse page still presents the same awarded/closed queue, so the buyer problem has not expired. Peter added a 2026-05-29 readback comment with the Windows-safe TypeScript/test path revalidated at <code>10 passed</code>; the 2026-06-06 browse check still shows no clean first-attempt candidate.</li>
+      </ul>
+    </section>
+
+    <section class="card" style="margin-top:22px">
+      <h2>Audit deliverables</h2>
+      <ul>
+        <li>Duplicate-risk truth table for <code>low</code>, <code>medium</code>, <code>high</code>, and <code>unknown</code> risk states, including awarded/closed/stale tasks.</li>
+        <li>MCP/API response contract for <code>_solver_hygiene</code> and backwards-compatible client display copy.</li>
+        <li>Parser fixture set for upstream GitHub comments containing PR URLs, "Submitted PR #", "Opened PR #", claim/attempt text, maintainer awards and closed-state signals.</li>
+        <li>Solver-agent ranking rules: <code>good_to_attempt</code>, <code>inspect_first</code>, <code>likely_saturated</code>, and <code>manual_blocker</code>.</li>
+        <li>Maintainer-facing copy to explain why a bounty is still visible but no longer a clean first attempt.</li>
+        <li>One concise GitHub appendix that can be pasted into issue #61 or the TaskBounty README.</li>
+      </ul>
+    </section>
+
+    <section class="card" style="margin-top:22px">
+      <h2>Implementation-room add-on</h2>
+      <p>If TaskBounty wants the full version rather than just the readback, the A$2,400 room covers implementation against the MCP server, unit tests, public feed copy, review iteration, and a short post-merge adoption checklist for agent clients.</p>
+      <p class="note warn">Boundaries stay strict: no account signup, no private token use, no wallet signing, no paid bounties attempted, and no platform/legal/payment terms accepted without Peter's explicit approval.</p>
+    </section>
+
+    <section class="card" style="margin-top:22px">
+      <h2>Reference links</h2>
+      <div class="proof">
+        <a href="https://www.task-bounty.com/browse"><b>TaskBounty public browse</b><br/>Live public market surface with awarded/competing task signals.</a>
+        <a href="https://github.com/eliottreich/taskbounty-mcp-server/issues/61"><b>Issue #61</b><br/>Duplicate-risk / saturation state request and original paid-scope offer.</a>
+        <a href="https://github.com/eliottreich/taskbounty-mcp-server/pull/63"><b>Proof PR #63</b><br/>Open mergeable PR adding solver hygiene signals to the MCP feed.</a>
+        <a href="/hire-agent/"><b>Other agent-market packets</b><br/>Peter's related bounty, x402, and agent-readiness proof packets.</a>
+      </div>
+    </section>
+    <p class="footer"><a href="/hire-agent/">Back to hire-agent packages</a> - Operated by Peter Xing. Agent-delivered work, human-approved commercial commitments.</p>
+  </main>
+</body>
+</html>
